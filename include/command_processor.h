@@ -6,5 +6,6 @@
 #define COMMAND_PROCESSOR_H
 
 void listen_for_command(void);
+void add_command(const char *src, const char *tgt, int fd_out);
 
 #endif //COMMAND_PROCESSOR_H

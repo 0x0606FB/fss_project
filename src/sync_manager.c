@@ -4,8 +4,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/inotify.h>
+#include <pthread.h>
+#include <unistd.h>      // for read, fork, execl
+#include <sys/types.h>   // for pid_t
+
+#define MAX_WATCHES 128
+#define EVENT_BUF_LEN (1024 * (sizeof(struct inotify_event) + 24))
 
 static sync_info_t *head = NULL;
+
+int inotify_fd;
+pthread_t inotify_thread;
 
 void parse_config_file(const char *path) {
     FILE *file = fopen(path, "r");
@@ -31,4 +41,75 @@ void sync_pair_dump(void) {
     for (sync_info_t *cur = head; cur != NULL; cur = cur->next) {
         printf("  %s -> %s [active=%d]\n", cur->source, cur->target, cur->active);
     }
+}
+
+int add_sync_pair(const char *src, const char *tgt) {
+    // Check if it already exists
+    for (sync_info_t *cur = head; cur; cur = cur->next) {
+        if (strcmp(cur->source, src) == 0 && strcmp(cur->target, tgt) == 0) {
+            return 0; // already exists
+        }
+    }
+
+    // Otherwise, add new pair
+    sync_info_t *node = malloc(sizeof(sync_info_t));
+    strncpy(node->source, src, MAX_PATH_LEN);
+    strncpy(node->target, tgt, MAX_PATH_LEN);
+    node->active = 1;
+    node->next = head;
+    head = node;
+
+    return 1; // success
+}
+
+void add_watch(sync_info_t *pair) {
+    int wd = inotify_add_watch(inotify_fd, pair->source,
+               IN_CREATE | IN_MODIFY | IN_DELETE);
+    if (wd < 0) {
+        perror("inotify_add_watch");
+        return;
+    }
+    printf("[watch] Monitoring %s (wd=%d)\n", pair->source, wd);
+}
+
+void *watcher_thread_fn(void *arg) {
+    char buffer[EVENT_BUF_LEN];
+
+    while (1) {
+        int length = read(inotify_fd, buffer, EVENT_BUF_LEN);
+        if (length < 0) {
+            perror("inotify read");
+            continue;
+        }
+
+        int i = 0;
+        while (i < length) {
+            struct inotify_event *event = (struct inotify_event *)&buffer[i];
+
+            if (event->len > 0) {
+                const char *op = NULL;
+                if (event->mask & IN_CREATE) op = "ADDED";
+                else if (event->mask & IN_MODIFY) op = "MODIFIED";
+                else if (event->mask & IN_DELETE) op = "DELETED";
+
+                if (op && head) { // TEMP: only first pair
+                    pid_t pid = fork();
+                    if (pid == 0) {
+                        execl("./bin/worker", "worker",
+                              head->source, head->target,
+                              event->name, op, (char *)NULL);
+                        perror("exec worker");
+                        exit(1);
+                    } else if (pid > 0) {
+                        printf("[watcher] %s: %s\n", op, event->name);
+                    } else {
+                        perror("fork");
+                    }
+                }
+            }
+
+            i += sizeof(struct inotify_event) + event->len;
+        }
+    }
+    return NULL;
 }

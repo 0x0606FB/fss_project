@@ -1,13 +1,12 @@
 
 // File: src/fss_manager.c
 #include "../include/sync_manager.h"
-#include "../include/utils.h"
-#include "../include/command_processor.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <pthread.h>
 
 #define PIPE_IN "fss_in"
 #define PIPE_OUT "fss_out"
@@ -49,6 +48,19 @@ int main(int argc, char *argv[]) {
 
     parse_config_file(config_file_path);
     pipes_init();
+
+    inotify_fd = inotify_init();
+    if (inotify_fd < 0) {
+        perror("inotify_init");
+        exit(1);
+    }
+    // Add watches for all loaded sync pairs from config
+    for (sync_info_t *cur = head; cur != NULL; cur = cur->next) {
+        add_watch_for(cur);
+    }
+    // Start the watcher thread
+    pthread_create(&inotify_thread, NULL, watcher_thread_fn, NULL);
+
     listen_for_command();
 
     return 0;

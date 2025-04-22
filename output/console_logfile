@@ -1,2 +1,73 @@
 [2025-04-19 22:46:54] Command shutdown
 [manager] Received: shutdown
+[2025-04-22 23:14:55] Command shutdown
+[manager] Received: shutdown
+[2025-04-23 00:39:01] Command FULL
+[manager] Received: FULL
+[manager] Unknown command: FULL
+[2025-04-23 00:39:07] Command FULL
+[manager] Received: FULL
+[2025-04-23 00:39:19] Command add
+[manager] Unknown command: FULL
+[2025-04-23 00:39:21] Command add
+[manager] Received: add
+[manager] Invalid add command format.
+[manager] Received: add
+[manager] Invalid add command format.
+[2025-04-23 00:39:35] Command shutdown
+[manager] Received: shutdown
+[2025-04-23 00:40:14] Command add test_directories/d1 test_directories_d2
+[manager] Received: add test_directories/d1 test_directories_d2
+[2025-04-23 00:40:24] Command 
+[2025-04-23 00:40:14] Added directory: test_directories/d1 -> test_directories_d2
+[2025-04-23 00:40:14] Monitoring started for test_directories/d1
+[2025-04-23 00:40:30] Command 
+[manager] Received: 
+[manager] Unknown command: 
+[manager] Received: 
+[manager] Unknown command: 
+[2025-04-23 00:40:48] Command add test_directories/d3 test_directories_d4
+[manager] Received: add test_directories/d3 test_directories_d4
+[2025-04-23 00:40:49] Command 
+[2025-04-23 00:40:48] Added directory: test_directories/d3 -> test_directories_d4
+[2025-04-23 00:40:48] Monitoring started for test_directories/d3
+[manager] Received: 
+[manager] Unknown command: 
+[2025-04-23 00:41:05] Command FULL
+[manager] Received: FULL
+[2025-04-23 00:41:06] Command 
+[manager] Unknown command: FULL
+[manager] Received: 
+[manager] Unknown command: 
+[2025-04-23 00:41:08] Command 
+[manager] Received: 
+[2025-04-23 00:41:08] Command 
+[manager] Unknown command: 
+[manager] Received: 
+[manager] Unknown command: 
+[2025-04-23 00:41:09] Command 
+[manager] Received: 
+[manager] Unknown command: 
+[2025-04-23 00:41:09] Command 
+[manager] Received: 
+[manager] Unknown command: 
+[2025-04-23 00:41:09] Command 
+[manager] Received: 
+[2025-04-23 00:41:09] Command 
+[manager] Unknown command: 
+[2025-04-23 00:41:09] Command 
+[manager] Received: 
+[manager] Unknown command: 
+[2025-04-23 00:41:11] Command FULL
+[manager] Received: 
+[manager] Unknown command: 
+[manager] Received: FULL
+[2025-04-23 00:41:12] Command 
+[manager] Unknown command: FULL
+[2025-04-23 00:41:12] Command 
+[manager] Received: 
+[manager] Unknown command: 
+[manager] Received: 
+[2025-04-23 00:41:17] Command shutdown
+[manager] Unknown command: 
+[manager] Received: shutdown
