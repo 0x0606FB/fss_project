@@ -3,7 +3,9 @@
 
 #define MAX_PATH_LEN 512
 
-extern int inotify_fd;
+#include <pthread.h>
+
+extern pthread_t inotify_fd;
 extern pthread_t inotify_thread;
 extern struct sync_info *head;
 

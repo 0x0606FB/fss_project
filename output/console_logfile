@@ -71,3 +71,4 @@
 [2025-04-23 00:41:17] Command shutdown
 [manager] Unknown command: 
 [manager] Received: shutdown
+[2025-04-24 17:04:27] Command add test_directories/d1 test_directories/d2

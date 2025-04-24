@@ -5,16 +5,15 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/inotify.h>
-#include <pthread.h>
 #include <unistd.h>      // for read, fork, execl
 #include <sys/types.h>   // for pid_t
 
 #define MAX_WATCHES 128
 #define EVENT_BUF_LEN (1024 * (sizeof(struct inotify_event) + 24))
 
-static sync_info_t *head = NULL;
+sync_info_t *head = NULL;
 
-int inotify_fd;
+pthread_t inotify_fd;
 pthread_t inotify_thread;
 
 void parse_config_file(const char *path) {
