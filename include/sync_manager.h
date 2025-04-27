@@ -19,6 +19,7 @@ typedef struct sync_info {
 void parse_config_file(const char *path);
 void sync_pair_dump(void);
 
+void event_wipe();
 int add_sync_pair(const char *src, const char *tgt);
 void add_watch(sync_info_t *pair);
 void *watcher_thread_fn(void *arg);

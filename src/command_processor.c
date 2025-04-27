@@ -32,20 +32,37 @@ void listen_for_command(void) {
         buffer[n] = '\0';
         printf("[console cmd] %s\n", buffer);
 
-        // Echo response for now
-        dprintf(fd_out, "[manager] Received: %s", buffer);
+        char src[MAX_PATH_LEN], tgt[MAX_PATH_LEN];
 
         if (strncmp(buffer, "shutdown", 8) == 0) {
             printf("[manager] Shutdown command received.\n");
             break;
-        } else if (strncmp(buffer, "add", 3) == 0) {
-            char src[MAX_PATH_LEN], tgt[MAX_PATH_LEN];
+        }
+        else if (strncmp(buffer, "add", 3) == 0) {
             if (sscanf(buffer, "add %s %s", src, tgt) == 2) {
                 add_command(src, tgt, fd_out);
             } else {
                 dprintf(fd_out, "[manager] Invalid add command format.\n");
             }
-        } else {
+        }
+        else if (strncmp(buffer, "cancel", 6) == 0) {
+            if (sscanf(buffer, "cancel %s %s", src, tgt) == 2) {
+                cancel_command(src, tgt, fd_out);
+            } else {
+                dprintf(fd_out, "[manager] Invalid cancel command format.\n");
+            }
+        }
+        else if (strncmp(buffer, "sync", 4) == 0) {
+            if (sscanf(buffer, "sync %s %s", src, tgt) == 2) {
+                sync_command(src, tgt, fd_out);
+            } else {
+                dprintf(fd_out, "[manager] Invalid sync command format.\n");
+            }
+        }
+        else if (strncmp(buffer, "status", 6) == 0) {
+            status_command(fd_out);
+        }
+        else {
             dprintf(fd_out, "[manager] Unknown command: %s", buffer);
         }
     }
@@ -69,3 +86,12 @@ void add_command(const char *src, const char *tgt, int fd_out) {
     dprintf(fd_out, "%s Added directory: %s -> %s\n", ts, src, tgt);
     dprintf(fd_out, "%s Monitoring started for %s\n", ts, src);
 }
+
+void cancel_command(const char *src, const char *tgt, int fd_out){
+  }
+
+void status_command(int fd_out){
+  }
+
+void sync_command(const char *src, const char *tgt, int fd_out){
+  }
